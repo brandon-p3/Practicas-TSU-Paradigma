@@ -1,5 +1,6 @@
 import 'package:crud_mongo/shemas/bottomnavbar.dart';
 import 'package:crud_mongo/shemas/login.dart';
+import 'package:crud_mongo/shemas/personForm.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Login(),
+      body: PersonFormScreen(),
     );
   }
 }
