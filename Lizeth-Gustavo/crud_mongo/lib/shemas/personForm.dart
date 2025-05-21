@@ -22,7 +22,10 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
   late TextEditingController _mailController;
   late TextEditingController _passwordController;
   late TextEditingController _ageController;
+  late TextEditingController _anotherController;
+
   bool _isLoading = false;
+  bool _showAnother = false;
 
   @override
   void initState() {
@@ -37,6 +40,7 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
       text: widget.person?.password ?? '',
     );
     _ageController = TextEditingController(text: widget.person?.age ?? '');
+    _anotherController = TextEditingController(text: widget.person?.another ?? '');
   }
 
   @override
@@ -46,6 +50,7 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
     _phoneController.dispose();
     _mailController.dispose();
     _ageController.dispose();
+    _anotherController.dispose();
     super.dispose();
   }
 
@@ -60,6 +65,9 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
       'mail': _mailController.text.trim(),
       'pass': _passwordController.text.trim(),
       'age': _ageController.text.trim(),
+      'another': _anotherController.text.trim(),
+      //if (_anotherController == "true")
+        //'another': _anotherController.text.trim(),
     };
 
     Map<String, dynamic> result;
@@ -67,6 +75,7 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
     if (widget.person == null) {
       // Crear
       result = await Api.addPerson(data);
+      print('Datos enviados: $data');
     } else {
       // Editar
       result = await Api.updatePerson(widget.person!.id, data);
@@ -108,21 +117,17 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Nombre'),
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? 'Ingrese el nombre'
-                              : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Ingrese el nombre'
+                      : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _lastnameController,
                   decoration: const InputDecoration(labelText: 'Apellido(s)'),
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? 'Ingrese el apellido'
-                              : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Ingrese el apellido'
+                      : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -177,8 +182,39 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
                   decoration: const InputDecoration(labelText: 'Edad'),
                   keyboardType: TextInputType.visiblePassword,
                 ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _showAnother,
+                      onChanged: (value) {
+                        setState(() {
+                          _showAnother = value!;
+                        });
+                      },
+                    ),
+                    const Text('Activar campo adicional'),
+                    
+                  ],
+                ),
+                if (_showAnother)
+                  Column(
+                    children: [
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _anotherController,
+                        decoration:
+                            const InputDecoration(labelText: 'Campo adicional'),
+                        validator: (value) {
+                          if (_showAnother &&
+                              (value == null || value.isEmpty)) {
+                            return 'Este campo es obligatorio si está activado';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
                 const SizedBox(height: 24),
-          
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -187,8 +223,8 @@ class _PersonFormScreenState extends State<PersonFormScreen> {
                       _isLoading
                           ? 'Procesando...'
                           : isEditing
-                          ? 'Actualizar'
-                          : 'Crear',
+                              ? 'Actualizar'
+                              : 'Crear',
                     ),
                   ),
                 ),
