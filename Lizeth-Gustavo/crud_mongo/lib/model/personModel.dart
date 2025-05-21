@@ -1,4 +1,4 @@
-class Person{
+class Person {
   final String? id;
   final String? name;
   final String? lastname;
@@ -6,6 +6,16 @@ class Person{
   final String? phone;
   final String? password;
   final String? age;
+  final String? another;
 
-  Person({this.id, this.name, this.lastname, this.mail, this.phone, this.password, this.age});
+  Person({
+    this.id,
+    this.name,
+    this.lastname,
+    this.mail,
+    this.phone,
+    this.password,
+    this.age,
+    this.another
+  });
 }

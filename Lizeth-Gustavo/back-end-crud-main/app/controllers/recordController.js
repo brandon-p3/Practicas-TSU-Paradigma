@@ -19,7 +19,7 @@ exports.check_back_end = async (req, res) => {
 //crear
 exports.create_record = async (req, res) => {
     try {
-        const { name, lastname, mail, phone, pass, age } = req.body;
+        const { name, lastname, mail, phone, pass, age, another  } = req.body;
 
         //tiene obligatorio
         if (!name || !lastname || !mail || !phone || !pass) {
@@ -36,7 +36,7 @@ exports.create_record = async (req, res) => {
         const password = await bcrypt.hash(pass, saltRounds);
 
 
-        const new_record = new Record({ name, lastname, mail, phone, password, age });
+        const new_record = new Record({ name, lastname, mail, phone, password, age, another: another || ""  });
         await new_record.save();
 
         res.status(200).json({
